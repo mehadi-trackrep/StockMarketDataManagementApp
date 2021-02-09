@@ -1,0 +1,15 @@
+CREATE TABLE customers (
+    id VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    age INTEGER,
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+INSERT INTO customers(id, first_name, last_name, age) VALUES (1, "John", "Abrar", 36);
+INSERT INTO customers(id, first_name, last_name, age) VALUES (2, "aaaa", "tttt", 46);
+INSERT INTO customers(id, first_name, last_name, age) VALUES (3, "bbbb", "rrrr", 26);
+INSERT INTO customers(id, first_name, last_name, age) VALUES (4, "cccc", "yyyy", 15);
+INSERT INTO customers(id, first_name, last_name, age) VALUES (5, "dddd", "uuuu", 30);
+INSERT INTO customers(id, first_name, last_name, age) VALUES (6, "eeee", "iiii", 74);
