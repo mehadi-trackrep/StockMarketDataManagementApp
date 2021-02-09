@@ -1,7 +1,10 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
+import csv
+import os
+import json
 # from database_utils import *
 
 import mysql.connector
@@ -11,7 +14,13 @@ mydb = mysql.connector.connect(host="localhost", user="root", passwd=None, port=
                                auth_plugin="mysql_native_password")
 cursor = mydb.cursor()
 
+#Global data
+
+mydata = []
+
 def update(rows):
+    global mydata
+    mydata = rows
     trv.delete(*trv.get_children())
     for i in rows:
         trv.insert('', 'end', values=i)
@@ -39,11 +48,12 @@ def getrow(event):
 
 
 def add_new():
+    id = t1.get()
     fname = t2.get()
     lname = t3.get()
     age = t4.get()
-    query = "INSERT INTO customers() VALUES(NULL, %s, %s, %s, NOW()"
-    cursor.execute(query, (fname, lname, age))
+    query = "INSERT INTO customers(id, first_name, last_name, age) VALUES(%s, %s, %s, %s)"
+    cursor.execute(query, (id, fname, lname, age))
     mydb.commit()
     clear()
 
@@ -70,8 +80,53 @@ def delete_customer():
     else:
         return True
 
-#TODO - SAMPLE ROWS:
-rows = (1, 'john', 'mike', 28)
+def exportcsv():
+    if len(mydata) < 1:
+        messagebox.showerror("No Data", "No data available to export!")
+        return False
+    fln = filedialog.asksaveasfilename(initialdir=os.getcwd(), title="Open CSV", filetypes=(("CSV File", "*.csv"), ("All Files","*.*")))
+    # file = open(fln, 'wb')
+    # exp_writer = csv.writer(file, delimiter=',')
+    # for i in mydata:
+    #     exp_writer.writerow(i)
+    # file.close()
+    with open(fln, mode='wb') as myfile:
+        # myfile = json.dump(myfile)
+        exp_writer = csv.writer(myfile, delimiter=',')
+        for i in mydata:
+            exp_writer.writerow(i)
+    messagebox.showinfo("Data Exported!","Your data has been exported to"+os.path.basename(fln)+" successfully.")
+
+
+def importcsv():
+    mydata.clear()
+    fln = filedialog.askopenfilename(initialdir=os.getcwd(), title="Save CSV", filetypes=(("CSV File", "*.csv"), ("All Files","*.*")))
+    with open(fln) as myfile:
+        csvreader = csv.reader(myfile, delimiter=",")
+        for i in csvreader:
+            mydata.append(i)
+    update(mydata)
+    messagebox.showinfo("Data Imported!", "Your data has been imported from " + os.path.basename(fln) + " successfully.")
+
+# 11,johnson,steve,38
+# 22,sean,rock,27
+# 33,mike,liza,25
+
+def savedb():
+    if messagebox.askyesno("Confirmation","Are you sure you want to save data to Database"):
+        for i in mydata:
+            uid = i[0]
+            fname = i[1]
+            lname = i[2]
+            age = i[3]
+            # query = "INSERT INTO customers(id, first_name, last_name, age, date) VALUES(NULL, %s, %s, %s, NOW())"
+            query = "INSERT INTO customers(id, first_name, last_name, age) VALUES(%s, %s, %s, %s)"
+            cursor.execute(query, (uid, fname, lname, age))
+        mydb.commit()
+        clear()
+        messagebox.showinfo("Data Saved!","Data has been saved to database")
+    else:
+        return False
 
 ##TODO - Applicaiton Starts here
 root = Tk()
@@ -98,6 +153,17 @@ trv.heading(3, text="Last Name")
 trv.heading(4, text="Age")
 
 trv.bind('<Double 1>', getrow)
+
+##Export - Import - Save buttons works:-
+expbtn = Button(wrapper1, text="Export CSV", command=exportcsv)
+expbtn.pack(side=tk.LEFT, padx=10, pady=10)
+impbtn = Button(wrapper1, text="Import CSV", command=importcsv)
+impbtn.pack(side=tk.LEFT, padx=10, pady=10)
+savebtn = Button(wrapper1, text="Save Data", command=savedb)
+savebtn.pack(side=tk.LEFT, padx=10, pady=10)
+extbtn = Button(wrapper1, text="Exit", command=lambda: exit())
+extbtn.pack(side=tk.LEFT, padx=10, pady=10)
+
 
 query = "SELECT id, first_name, last_name, age FROM customers"
 cursor.execute(query)
