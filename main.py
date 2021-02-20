@@ -46,7 +46,6 @@ def getrow(event):
     t3.set(item["values"][2])
     t4.set(item["values"][3])
 
-
 def add_new():
     id = t1.get()
     fname = t2.get()
@@ -96,7 +95,6 @@ def exportcsv():
         for i in mydata:
             exp_writer.writerow(i)
     messagebox.showinfo("Data Exported!","Your data has been exported to"+os.path.basename(fln)+" successfully.")
-
 
 def importcsv():
     mydata.clear()

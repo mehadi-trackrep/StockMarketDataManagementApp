@@ -1,0 +1,13 @@
+[Category] ModelName
+Date
+BalancingFigure
+ReceivedQuantity
+ReturnChallan(ItemSerial)]
+ReturnRemarks
+GatePassSerialNumber
+AcceptanceOfOrderSerialNumber
+DeliveryChallanSerialNumber
+QuantityIssued
+BalanceQuantity
+MarketingPerson
+PartyName(LetterOfCredit)
