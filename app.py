@@ -15,7 +15,9 @@ mydb = mysql.connector.connect(host="localhost", user="root", passwd=None, port=
 cursor = mydb.cursor()
 
 def add_new():
-    pass
+    if new_category.get():
+        print("new category: ",new_category.get())
+    print("dropdown clicked: ",clicked.get())
 
 ##TODO - Applicaiton Starts here
 root = Tk()
@@ -35,19 +37,16 @@ t12 = StringVar()
 t13 = StringVar()
 t14 = StringVar()
 t15 = StringVar()
-
+clicked = StringVar()
+new_category = StringVar()
 
 wrapper1 = LabelFrame(root, text="Category Section", font=("Arial", 25))
 wrapperr3 = LabelFrame(root, text="Customer Data", font=("Arial", 25))
-#
-# wrapper1.pack(fill="both", expand="yes", padx=20, pady=10)
-# wrapper2.pack(fill="both", expand="yes", padx=20, pady=10)
+
 wrapper1.pack(fill="both", expand="yes", padx=20, pady=20)
 wrapperr3.pack(fill="both", expand="yes", padx=20, pady=20)
 
-###TODO- combobox
-clicked = StringVar()
-
+###TODO- combobox & create category
 # Label
 ttk.Label(wrapper1, text="Select the Category: ",
           font=("Times New Roman", 15)).grid(column=1,
@@ -56,6 +55,12 @@ ttk.Label(wrapper1, text="Select the Category: ",
 monthchoosen = ttk.Combobox(wrapper1, state="readonly", width=27,
                             textvariable=clicked)
 
+query = "SELECT * FROM Categories"
+cursor.execute(query)
+rows = cursor.fetchall()
+print("====> rows: ", rows)
+for each_category in rows:
+    print("cat: ",each_category)
 # Adding combobox drop down list
 monthchoosen['values'] = ("Solar System",
                             "Mega Spares",
@@ -91,11 +96,11 @@ monthchoosen['values'] = ("Solar System",
 monthchoosen.grid(column=3, row=2)
 monthchoosen.current(2)
 
-var = StringVar()
-lbl = Label(wrapper1, text="Create Category", font=("Helvetica", 15))
-lbl.grid(row=2, column=4, padx=25, pady=6)
-ent = Entry(wrapper1, textvariable=var)
-ent.grid(row=2, column=5, padx=5, pady=6)
+
+cat_lbl = Label(wrapper1, text="Create a Category", font=("Helvetica", 15))
+cat_lbl.grid(row=2, column=4, padx=25, pady=6)
+cat_ent = Entry(wrapper1, textvariable=new_category)
+cat_ent.grid(row=2, column=5, padx=5, pady=6)
 
 print("Chosen value: ",clicked.get())
 
@@ -170,11 +175,8 @@ ent13 = Entry(wrapper3, textvariable=t13)
 ent13.grid(row=2, column=5, padx=5, pady=6)
 print("-------------------data entry end-------------------------")
 
-
-add_btn = Button(wrapper3, text="Add New", bg="black", fg="white", command=add_new)
-# add_btn.pack(side=tk.RIGHT)
-add_btn.grid(row=4, column=5, sticky=tk.W+tk.E)
-# add_btn.grid(row=7, column=0, padx=5, pady=3, side=tk.RIGHT)
+add_btn = Button(wrapperr3, text="Add New", bg="black", fg="white", command=lambda: add_new())
+add_btn.pack(side=tk.RIGHT)
 
 root.title("Stock Data Management Application")
 width= root.winfo_screenwidth()

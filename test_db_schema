@@ -13,3 +13,52 @@ INSERT INTO customers(id, first_name, last_name, age) VALUES (3, "bbbb", "rrrr",
 INSERT INTO customers(id, first_name, last_name, age) VALUES (4, "cccc", "yyyy", 15);
 INSERT INTO customers(id, first_name, last_name, age) VALUES (5, "dddd", "uuuu", 30);
 INSERT INTO customers(id, first_name, last_name, age) VALUES (6, "eeee", "iiii", 74);
+
+CREATE TABLE test (
+    id int NOT NULL AUTO_INCREMENT,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    age INTEGER,
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO test(first_name, last_name, age) VALUES ("cccc", "yyyy", 15);
+INSERT INTO test(first_name, last_name, age) VALUES ("dddd", "uuuu", 30);
+INSERT INTO test(first_name, last_name, age) VALUES ("eeee", "iiii", 74);
+
+##################################################################################
+
+CREATE TABLE Categories (
+    cat_id int NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (cat_id)
+);
+
+INSERT INTO Categories(name, create_time) VALUES ("Solar System", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Mega Spares", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Inverter", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Motors B3 & V1", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Engine+Generator+Milling Mach", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Allied Pump Motor Set", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Submersible", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("KRT+Amarex+Movi", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Centrifugal Pumps & Etabloc", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Booster Pump Set", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Sandpiper", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Chemical", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Gear Viking Pump Motor", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Pulsafedder", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Water Meter", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Valves", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Strainers & Pipes", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("Flexible Joint", "2021-02-21 10:51:14");
+
+RENAME TABLE `categoriesss` TO `Categories`;
+TRUNCATE TABLE Categories;
+
+INSERT INTO Categories(name, create_time) VALUES ("cccc", "2021-02-21 10:51:14");
+INSERT INTO Categories(name, create_time) VALUES ("dddd", " 2021-03-21 09:56:14");
+INSERT INTO Categories(name, create_time) VALUES ("eeee", " 2021-04-21 09:56:14");
+INSERT INTO Categories(name, create_time) VALUES ("ffff", " 2021-05-21 09:56:14");
