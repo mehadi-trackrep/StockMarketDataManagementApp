@@ -2,6 +2,7 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox, filedialog
+from datetime import datetime
 import csv
 import os
 import json
@@ -14,10 +15,58 @@ mydb = mysql.connector.connect(host="localhost", user="root", passwd=None, port=
                                auth_plugin="mysql_native_password")
 cursor = mydb.cursor()
 
+def find_all_categories():
+    query = "SELECT * FROM Categories"
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    cats = ["--Select-a-category--"]
+    for each_category in rows:
+        cats.append(each_category[1])
+    return cats
+
+def update_combobox(the_categories):
+    catchoosen['values'] = tuple(the_categories)
+    catchoosen.grid(column=3, row=2)
+    catchoosen.current(0)
+
 def add_new():
     if new_category.get():
         print("new category: ",new_category.get())
     print("dropdown clicked: ",clicked.get())
+
+def fun_new_category():
+    new_cat = str(new_category.get())
+    if new_cat:
+        query = "SELECT * FROM Categories WHERE name = %s"      ##V.V.I., separately params send na korle error dei!!
+        cursor.execute(query, (new_cat,))
+        rows = cursor.fetchall()
+        if rows:
+            messagebox.showinfo("Concern!", "This category already existed!!")
+        else:
+            query = "INSERT INTO Categories(name, create_time) VALUES (%s, %s)" # + new_cat + "," + str(datetime.now()) + ")"
+            cursor.execute(query, (new_cat, datetime.now(),))
+            mydb.commit()
+
+            the_categories.append(new_category.get())
+            update_combobox(the_categories)
+
+        print("new category: ", new_category.get())
+    else:
+        messagebox.showerror("Alert Message", "Please, enter a new category before submit!!")
+
+def delete_category():
+    clicked_value = clicked.get()
+    if clicked_value != "--Select-a-category--":
+        msg = "Confirm Delete - [[ " + clicked_value + " ]]"
+        if messagebox.askyesno(msg, "Are you sure you want to delete this CATEGORY?"):
+            query = "DELETE FROM Categories WHERE name = %s"  # + new_cat + "," + str(datetime.now()) + ")"
+            cursor.execute(query, (clicked_value, ))
+            mydb.commit()
+            cats = find_all_categories()
+            update_combobox(cats)
+
+### Table exists or not check: SELECT * FROM information_schema.tables WHERE table_name = 'YOUR TABLE'
 
 ##TODO - Applicaiton Starts here
 root = Tk()
@@ -52,57 +101,26 @@ ttk.Label(wrapper1, text="Select the Category: ",
           font=("Times New Roman", 15)).grid(column=1,
                                              row=2, padx=10, pady=25)
 
-monthchoosen = ttk.Combobox(wrapper1, state="readonly", width=27,
+catchoosen = ttk.Combobox(wrapper1, state="readonly", width=27,
                             textvariable=clicked)
+the_categories = find_all_categories()
+catchoosen['values'] = tuple(the_categories)
+catchoosen.grid(row=2,column=3)
+catchoosen.current(0)
 
-query = "SELECT * FROM Categories"
-cursor.execute(query)
-rows = cursor.fetchall()
-print("====> rows: ", rows)
-for each_category in rows:
-    print("cat: ",each_category)
-# Adding combobox drop down list
-monthchoosen['values'] = ("Solar System",
-                            "Mega Spares",
-                            "Inverter",
-                            "Motors B3 & V1",
-                            "Engine+Generator+Milling Mach",
-                            "Allied Pump Motor Set",
-                            "Submersible",
-                            "KRT+Amarex+Movi",
-                            "Centrifugal Pumps & Etabloc",
-                            "Booster Pump Set",
-                            "Sandpiper",
-                            "Chemical",
-                            "Gear Viking Pump Motor",
-                            "Pulsafedder",
-                            "Water Meter",
-                            "Valves",
-                            "Strainers & Pipes",
-                            "Flexible Joint"
-                          )
-# b1 = tk.Button(wrapper,  text='Show Value', command=lambda: my_show())
-# b1.grid(row=2,column=6)
-#
-# str_out= StringVar()
-# str_out.set("Output")
-#
-# l2 = tk.Label(wrapper,  textvariable=str_out, width=10)
-# l2.grid(row=2,column=7)
-#
-# def my_show():
-#     str_out.set(clicked.get())
+b1 = tk.Button(wrapper1,  text='Delete Category', command=lambda: delete_category())
+b1.grid(row=2,column=4, padx=5, pady=6)
 
-monthchoosen.grid(column=3, row=2)
-monthchoosen.current(2)
-
+hudai = Label(wrapper1, text=" || ", font=("Helvetica", 15), width=10)
+hudai.grid(row=2, column=5)
 
 cat_lbl = Label(wrapper1, text="Create a Category", font=("Helvetica", 15))
-cat_lbl.grid(row=2, column=4, padx=25, pady=6)
+cat_lbl.grid(row=2, column=6, pady=6)
 cat_ent = Entry(wrapper1, textvariable=new_category)
-cat_ent.grid(row=2, column=5, padx=5, pady=6)
+cat_ent.grid(row=2, column=7, padx=5, pady=6)
 
-print("Chosen value: ",clicked.get())
+b1 = tk.Button(wrapper1,  text='Submit', command=lambda: fun_new_category())
+b1.grid(row=2,column=8, padx=5, pady=6)
 
 
 #TODO - User Data Selection
